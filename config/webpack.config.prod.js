@@ -196,7 +196,7 @@ module.exports = {
                           require('postcss-cssnext')({
                             features: {
                               customProperties: {
-                                variables: require('../src/config.js'),
+                                variables: require(paths.configJs),
                               }
                             }
                           }),

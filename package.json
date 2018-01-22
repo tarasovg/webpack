@@ -1,5 +1,5 @@
 {
-  "name": "ridgebox_webpack",
+  "name": "ridgebox-webpack",
   "version": "0.1.0",
   "private": true,
   "main": "scripts/index.js",

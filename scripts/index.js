@@ -1,6 +1,14 @@
-const build = require('./build');
-const start = require('./start');
-const test = require('./test');
+function build() {
+  require('build');
+}
+
+function start() {
+  require('start');
+}
+
+function test() {
+  require('test');
+}
 
 module.exports = {
   build,

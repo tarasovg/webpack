@@ -1,13 +1,13 @@
 function build() {
-  require('build');
+  require('./build');
 }
 
 function start() {
-  require('start');
+  require('./start');
 }
 
 function test() {
-  require('test');
+  require('./test');
 }
 
 module.exports = {

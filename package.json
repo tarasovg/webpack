@@ -2,6 +2,7 @@
   "name": "ridgebox_webpack",
   "version": "0.1.0",
   "private": true,
+  "main": "scripts/index.js",
   "dependencies": {
     "babel-core": "6.26.0",
     "babel-eslint": "7.2.3",

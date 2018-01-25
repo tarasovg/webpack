@@ -46,6 +46,52 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
     { publicPath: Array(cssFilename.split('/').length).join('../') }
   : {};
 
+// Generates CSS loader config to exclude modules or not
+function getCssConfig(modules) {
+  return ExtractTextPlugin.extract(
+    Object.assign(
+      {
+        fallback: {
+          loader: require.resolve('style-loader'),
+          options: {
+            hmr: false,
+          },
+        },
+        use: [
+          {
+            loader: require.resolve('css-loader'),
+            options: {
+              importLoaders: 1,
+              minimize: true,
+              sourceMap: shouldUseSourceMap,
+              modules: modules,
+            },
+          },
+          {
+            loader: require.resolve('postcss-loader'),
+            options: {
+              // Necessary for external CSS imports to work
+              // https://github.com/facebookincubator/create-react-app/issues/2677
+              ident: 'postcss',
+              plugins: () => [
+                require('postcss-smart-import'),
+                require('postcss-cssnext')({
+                  features: {
+                    customProperties: {
+                      variables: require(paths.configJs),
+                    }
+                  }
+                }),
+              ],
+            },
+          },
+        ],
+      },
+      extractTextPluginOptions
+    )
+  );
+}
+
 // This is the production configuration.
 // It compiles slowly and is focused on producing a fast and minimal bundle.
 // The development configuration is different and lives in a separate file.
@@ -167,48 +213,14 @@ module.exports = {
           // in the main CSS file.
           {
             test: /\.css$/,
-            loader: ExtractTextPlugin.extract(
-              Object.assign(
-                {
-                  fallback: {
-                    loader: require.resolve('style-loader'),
-                    options: {
-                      hmr: false,
-                    },
-                  },
-                  use: [
-                    {
-                      loader: require.resolve('css-loader'),
-                      options: {
-                        importLoaders: 1,
-                        minimize: true,
-                        sourceMap: shouldUseSourceMap,
-                        modules: true,
-                      },
-                    },
-                    {
-                      loader: require.resolve('postcss-loader'),
-                      options: {
-                        // Necessary for external CSS imports to work
-                        // https://github.com/facebookincubator/create-react-app/issues/2677
-                        ident: 'postcss',
-                        plugins: () => [
-                          require('postcss-smart-import'),
-                          require('postcss-cssnext')({
-                            features: {
-                              customProperties: {
-                                variables: require(paths.configJs),
-                              }
-                            }
-                          }),
-                        ],
-                      },
-                    },
-                  ],
-                },
-                extractTextPluginOptions
-              )
-            ),
+            exclude: /.global.css/,
+            loader: getCssConfig(true),
+            // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
+          },
+          {
+            test: /\.css$/,
+            include: /.global.css/,
+            loader: getCssConfig(false),
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
           },
           // "file" loader makes sure assets end up in the `build` folder.

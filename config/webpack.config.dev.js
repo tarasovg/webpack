@@ -21,6 +21,25 @@ const publicUrl = '';
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
 
+const postcssConfig = {
+  loader: require.resolve('postcss-loader'),
+  options: {
+    // Necessary for external CSS imports to work
+    // https://github.com/facebookincubator/create-react-app/issues/2677
+    ident: 'postcss',
+    plugins: () => [
+      require('postcss-smart-import'),
+      require('postcss-cssnext')({
+        features: {
+          customProperties: {
+            variables: require(paths.configJs),
+          }
+        }
+      }),
+    ],
+  },
+};
+
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
@@ -157,6 +176,21 @@ module.exports = {
           // in development "style" loader enables hot editing of CSS.
           {
             test: /\.css$/,
+            include: /.global.css/,
+            use: [
+              require.resolve('style-loader'),
+              {
+                loader: require.resolve('css-loader'),
+                options: {
+                  importLoaders: 1,
+                },
+              },
+              postcssConfig,
+            ],
+          },
+          {
+            test: /\.css$/,
+            exclude: /.global.css/,
             use: [
               require.resolve('style-loader'),
               {
@@ -169,24 +203,7 @@ module.exports = {
                   localIdentName: '[name]__[local]___[hash:base64:5]',
                 },
               },
-              {
-                loader: require.resolve('postcss-loader'),
-                options: {
-                  // Necessary for external CSS imports to work
-                  // https://github.com/facebookincubator/create-react-app/issues/2677
-                  ident: 'postcss',
-                  plugins: () => [
-                    require('postcss-smart-import'),
-                    require('postcss-cssnext')({
-                      features: {
-                        customProperties: {
-                          variables: require(paths.configJs),
-                        }
-                      }
-                    }),
-                  ],
-                },
-              },
+              postcssConfig,
             ],
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.

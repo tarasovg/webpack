@@ -1,28 +1,17 @@
-
-// Makes the script crash on unhandled rejections instead of silently
-// ignoring them. In the future, promise rejections that are not handled will
-// terminate the Node.js process with a non-zero exit code.
-process.on('unhandledRejection', err => {
-  throw err;
-});
-
-function getDefaultConfig(c) {
-  return c;
+function build() {
+  require('./build');
 }
 
-function dev(getConfig = getDefaultConfig) {
-  const devSetup = require('./config/dev.setup');
-  const developmentConfig = require('../config/webpack.config.dev');
-  devSetup(getConfig(developmentConfig));
+function start() {
+  require('./start');
 }
 
-function build(getConfig = getDefaultConfig) {
-  const buildSetup = require('./config/build.setup');
-  const productionConfig = require('../config/webpack.config.prod');
-  buildSetup(getConfig(productionConfig));
+function test() {
+  require('./test');
 }
 
 module.exports = {
   build,
-  dev,
+  start,
+  test,
 };

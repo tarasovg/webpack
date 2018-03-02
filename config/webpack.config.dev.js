@@ -27,6 +27,7 @@ const postcssConfig = {
     // Necessary for external CSS imports to work
     // https://github.com/facebookincubator/create-react-app/issues/2677
     ident: 'postcss',
+    sourceMap: true,
     plugins: () => [
       require('postcss-smart-import'),
       require('postcss-cssnext')({
@@ -204,6 +205,30 @@ module.exports = {
                 },
               },
               postcssConfig,
+            ],
+          },
+          {
+            test: /\.scss$/,
+            exclude: /node_modules/,
+            use: [
+              require.resolve('style-loader'),
+              {
+                loader: require.resolve('css-loader'),
+                options: {
+                  importLoaders: 1,
+                  modules: true,
+                  camelCase: true,
+                  sourceMap: true,
+                  localIdentName: '[name]__[local]___[hash:base64:5]',
+                },
+              },
+              postcssConfig,
+              {
+                loader: 'sass-loader',
+                options: {
+                  sourceMap: true,
+                },
+              }
             ],
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.

@@ -47,7 +47,7 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
   : {};
 
 // Generates CSS loader config to exclude modules or not
-function getCssConfig(modules) {
+function getCssConfig(modules, sass) {
   return ExtractTextPlugin.extract(
     Object.assign(
       {
@@ -73,6 +73,7 @@ function getCssConfig(modules) {
               // Necessary for external CSS imports to work
               // https://github.com/facebookincubator/create-react-app/issues/2677
               ident: 'postcss',
+              sourceMap: shouldUseSourceMap,
               plugins: () => [
                 require('postcss-smart-import'),
                 require('postcss-cssnext')({
@@ -85,7 +86,12 @@ function getCssConfig(modules) {
               ],
             },
           },
-        ],
+        ].concat(sass ? {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: shouldUseSourceMap,
+          },
+        } : []),
       },
       extractTextPluginOptions
     )
@@ -221,6 +227,11 @@ module.exports = {
             test: /\.css$/,
             include: /.global.css/,
             loader: getCssConfig(false),
+            // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
+          },
+          {
+            test: /\.scss$/,
+            loader: getCssConfig(true, true),
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
           },
           // "file" loader makes sure assets end up in the `build` folder.

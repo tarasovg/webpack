@@ -86,12 +86,15 @@ function getCssConfig(modules, sass) {
               ],
             },
           },
-        ].concat(sass ? {
-          loader: 'sass-loader',
-          options: {
-            sourceMap: shouldUseSourceMap,
-          },
-        } : []),
+        ].concat(sass ? [
+          require.resolve('resolve-url-loader'),
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: shouldUseSourceMap,
+            },
+          }
+        ] : []),
       },
       extractTextPluginOptions
     )

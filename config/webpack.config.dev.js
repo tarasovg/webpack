@@ -223,6 +223,7 @@ module.exports = {
                 },
               },
               postcssConfig,
+              require.resolve('resolve-url-loader'),
               {
                 loader: 'sass-loader',
                 options: {

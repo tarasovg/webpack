@@ -1,6 +1,5 @@
 'use strict';
 
-const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -168,6 +167,9 @@ module.exports = {
               baseConfig: {
                 extends: [require.resolve('eslint-config-react-app')],
               },
+              emitWarning: true,
+              failOnError: false,
+              failOnWarning: false,
               
             },
             loader: require.resolve('eslint-loader'),
